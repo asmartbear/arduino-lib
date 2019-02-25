@@ -14,6 +14,11 @@ float cos_fast(float a) {
   if (a < 0.0) {
     a = -a;
   }
+  
+  // Map multiples of 2π back to [0,2π]
+  if (a > TWO_PI) {
+	  a = fmod(a, TWO_PI);		// this function isn't fast, but there's no alternative; avoid by supplying angles inside [-2π,2π].
+  }
 
   // The second half of the circle mirrors the first
   if (a > PI) {
@@ -28,19 +33,19 @@ float cos_fast(float a) {
 
   // If a is small enough, use the Taylor Series about a=0.
   // This constant is the cross-over point where the other Taylor Series is more
-  // accurate. The worse-case accuracy is still within 0.1%.  It's important to
+  // accurate. The worse-case accuracy is +0.0001 from cos(x).  It's important to
   // use the exact point so that the resulting function is continuous, even if
   // it has a slight cusp.
-  if (a < 0.653396) {
+  if (a < 0.653395) {
     a = a * a;
-    r = 1.0 + a * (-0.5 + a * 0.0416666666);
+    r = 1.0 + a * (-0.5 + a * 0.0416666666666);
     return positive ? r : -r;
   }
 
   // Use the Taylor Series about a=pi/2.
   a -= PI_2;
   float a_sq = a*a;
-  r = a * (-1.0 + a_sq * (0.1666666666 - a_sq * 0.0833333333));
+  r = a * (-1.0 + a_sq * (0.1666666666666 - a_sq * 0.00833333333333));
   return positive ? r : -r;
 }
 
@@ -65,20 +70,26 @@ void cos_sin(float a, float *cos_result, float *sin_result) {
 
 #include <stdio.h>
 
-#define N_STEPS 40
-#define ANG_STEP (TWO_PI / N_STEPS)
+#define MAX_TEST_ANGLE PI_2
+#define N_STEPS 100
+#define ANG_STEP (MAX_TEST_ANGLE / N_STEPS)
+#define ERR_THRESHOLD 0.0001
 
-void main() {
-  int a;
+int main() {
+  float a;
   float actual, estimate, err;
 
   printf("Hello, World!\n");
-  for (a = 0; a < TWO_PI; a += ANG_STEP) {
+  for (a = 0; a < MAX_TEST_ANGLE; a += ANG_STEP) {
     actual = cos(a);
     estimate = cos_fast(a);
     err = fabs(estimate - actual);
-    printf("cos(%0.4f) = %0.4f ≈ %0.4f, Δ%0.4f\n", a, actual, estimate, diff);
+	if (err > ERR_THRESHOLD) {
+		printf("cos(%8.4f) = %8.4f ≈ %8.4f, Δ%8.4f\n", a, actual, estimate, err);
+	}
   }
+  
+  return 0;
 }
 
 #endif

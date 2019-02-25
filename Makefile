@@ -16,7 +16,7 @@ test-trig: bin/trig_test
 	bin/trig_test
 
 bin/%.o: src/%.c
-	cc -c -o $@ -DDEV_TEST=1 $< 
+	cc -c -o $@ -DDEV_TEST=1 $<
 
 bin/trig_test: bin/trig.o
 	cc bin/trig.o -o bin/trig_test
