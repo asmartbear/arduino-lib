@@ -1,2 +1,3 @@
 # arduino-lib
-Common utilities for Arduino projects
+
+Common utilities for Arduino projects.
