@@ -48,6 +48,7 @@ void set_rgb(int *pins, int byte_angle) {
   } else {
   	g = 0;
   }
+  g = g * 5 / 4;    // boost green because it's dimmer
   
   // Blue: Centered on 240°
   if (byte_angle >= BYTE_ANGLE_240) {
@@ -57,6 +58,7 @@ void set_rgb(int *pins, int byte_angle) {
   } else {
   	b = 0;
   }
+  b = b * 4 / 5;    // reduce blue because it's extra bright
   
   smart_set_color(pins[0], 0, r);
   smart_set_color(pins[1], 1, g);
