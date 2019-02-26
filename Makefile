@@ -2,7 +2,7 @@
 # Ref: Graphviz CLI: https://www.graphviz.org/doc/info/command.html
 
 C_FILES := $(wildcard src/*.c)
-O_FILES := $(patsubst dot/%.c, bin/%.o, $(C_FILES))
+O_FILES := $(patsubst src/%.c, bin/%.o, $(C_FILES))
 TESTS := bin/trig_test
 
 .PHONY: clean test-trig
@@ -15,7 +15,7 @@ clean:
 test-trig: bin/trig_test
 	bin/trig_test
 
-bin/%.o: src/%.c
+bin/%.o: src/%.c src/arduino.h Makefile
 	cc -c -o $@ -DDEV_TEST=1 $<
 
 bin/trig_test: bin/trig.o
