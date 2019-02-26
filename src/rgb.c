@@ -18,6 +18,16 @@ void smart_set_color(int pin, int color, int value) {
   }
 }
 
+// Call once to set up the RGB LED pins and state.
+void setup_rgb(int *pins) {
+	
+  // Establish the mode of the pins, and set to the "previous," i.e. the initial state.
+  for ( int k = 3 ; k-- ; ) {
+    pinMode(pins[k], OUTPUT);
+    digitalWrite(pins[k], prev_color_values[0]);
+  }
+}
+
 // Sets the RGB-LED to the color represented by the given floating-point angle.
 void set_rgb(int *pins, float a) {
   int value;
@@ -35,16 +45,6 @@ void set_rgb(int *pins, float a) {
       value = (int)(intensity * 255);
     }
     smart_set_color(pins[k], k, value);
-  }
-}
-
-// Call once to set up the RGB LED pins and state.
-void setup_rgb(int *pins) {
-	
-  // Establish the mode of the pins, and set to the "previous," i.e. the initial state.
-  for ( int k = 3 ; k-- ; ) {
-    pinMode(pins[k], OUTPUT);
-    digitalWrite(pins[k], prev_color_values[0]);
   }
 }
 

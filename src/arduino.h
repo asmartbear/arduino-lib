@@ -9,6 +9,7 @@
 #define INPUT 234
 #define OUTPUT 345
 
+#define constrain(_x, _a, _b)		((_x) < (_a) ? (_a) : ( (_x) > (_b) ? (_b) : (_x) ))
 #define bitRead(_x, _b)  (((_x) >> (_b)) & 1)
 #define bitSet(_x, _b)   _x |= (1 << (_b))
 
