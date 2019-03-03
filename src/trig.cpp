@@ -1,3 +1,4 @@
+#include <Arduino.h>
 
 #define PI_2 HALF_PI
 

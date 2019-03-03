@@ -17,6 +17,10 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#ifndef DEV_TEST
+#error Must only include this when compiling locally for testing, not when linking with Arduino.
+#endif
+
 #ifndef Arduino_h
 #define Arduino_h
 
