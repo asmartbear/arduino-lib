@@ -12,9 +12,16 @@
 // Call-back when a switch is pushed.
 typedef void (*cb_switch_pushed)(int pin);
 
+// Call-back when an analog input is changed.
+typedef void (*cb_input_changed)(int val);
+
 // Call during setup, to establish the pins for the switches.
 // Supply a bitmap of which pin numbers should be configured as switches.
 void setup_switch(int pin, cb_switch_pushed cb);
+
+// Call the given call-back every time the (analog) value of the given pin changes.
+// Furthermore, the input is debounced; it will not trigger if it changed by only one unit.
+void setup_input_trigger(int pin, cb_input_changed cb);
 
 // Read from an analog pin, but if the change from the previous reading to the current
 // reading is small enough, just return the previous reading.  This prevents flapping
