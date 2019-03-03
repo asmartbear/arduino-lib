@@ -1,4 +1,3 @@
-#include "arduino.h"
 
 #define BYTE_ANGLE_120 85		// the byte-value in [0,255] mapping to 120 degrees
 #define BYTE_ANGLE_240 171		// the byte-value in [0,255] mapping to 240 degrees

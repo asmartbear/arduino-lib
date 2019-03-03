@@ -1,6 +1,5 @@
 #if 0			// let's not do this
 
-#include "arduino.h"
 #include "trig.h"
 
 // The 2D vectors that each color represents

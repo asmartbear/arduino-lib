@@ -1,8 +1,5 @@
-#include <math.h>
 
-#define PI 3.1415926535
-#define PI_2 1.5707963268
-#define TWO_PI 6.2831853072
+#define PI_2 HALF_PI
 
 // Compute cos(a) substantially faster (but less accurate) than the built-in.
 // Domain is the interval [-2pi,2pi]; range is accurate within 0.1%.
