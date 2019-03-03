@@ -36,4 +36,5 @@ public:
 	
 };
 
+// Singleton instance of the Timer System.
 extern CTimers Timers;

@@ -3,36 +3,34 @@
 CTimers Timers;
 
 int CTimers::loop() {
-	unsigned long interval;
+	unsigned long interval, next;
 	
 	// Load the current time
 	unsigned long ms = millis();
 	
 	// Look for slots which need to be triggered
+	unsigned long next_trigger = ms + 60000;			// also look for the next time we'll trigger something
 	int slot = MAX_NUM_TIMERS;
 	while (slot--) {
-		if (this->timers[slot].ms_interval && ms >= this->timers[slot].ms_next_trigger) {		// valid slot, and it's time to trigger?
-			this->timers[slot].callback(ms, ms - this->timers[slot].ms_last_triggered);		// trigger, and give the exact ms difference for things like rate calculations
-			this->timers[slot].ms_last_triggered = ms;
-			interval = this->timers[slot].ms_interval;
-			this->timers[slot].ms_next_trigger = ((ms / interval) + 1) * interval;		// the millis() when we need to trigger again
-			ms = millis();			// reset the current millisecond value, in case that call-back took a long time
+		interval = this->timers[slot].ms_interval;
+		if (interval > 0) {
+			
+			// Check for trigger
+			next = this->timers[slot].ms_next_trigger;
+			if (ms >= next) {		// valid slot, and it's time to trigger?
+				this->timers[slot].callback(ms, ms - this->timers[slot].ms_last_triggered);		// trigger, and give the exact ms difference for things like rate calculations
+				this->timers[slot].ms_last_triggered = ms;
+				this->timers[slot].ms_next_trigger = next = ((ms / interval) + 1) * interval;		// the millis() when we need to trigger again
+				ms = millis();			// reset the current millisecond value, in case that call-back took a long time
+			}
+			
+			// Accumulate the minimum next trigger moment
+			next_trigger = min(next_trigger, next);
 		}
 	}
 	
 	// Determine the longest we could sleep until the next timer
-	unsigned long next_trigger = ms + 10000;			// longest we'll wait is 10 seconds from now
-	slot = MAX_NUM_TIMERS;
-	while (slot--) {
-		if (this->timers[slot].ms_interval) {		// valid slot?
-			interval = this->timers[slot].ms_next_trigger;
-			next_trigger = min(next_trigger, interval);			// whichever trigger is sooner
-		}
-	}
-	if (next_trigger <= ms) {		// no delay?
-		return 0;
-	}
-	return next_trigger - ms;		// can delay this long
+	return (next_trigger <= ms) ? 0 : (next_trigger - ms);
 }
 
 int CTimers::create(unsigned long ms_interval, timer_cb cb) {
