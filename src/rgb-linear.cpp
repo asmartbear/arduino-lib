@@ -1,19 +1,9 @@
 #include <Arduino.h>
 #include "rgb-linear.h"
+#include "pins.h"
 
 #define BYTE_ANGLE_120 85		// the byte-value in [0,255] mapping to 120 degrees
 #define BYTE_ANGLE_240 171		// the byte-value in [0,255] mapping to 240 degrees
-
-// Sets the pin to the given value, but does nothing if that is last value set.
-// This prevents a material number of function calls and thus speeds up the process.
-static int prev_color_values[3] = { 0, 0, 0 };
-static void smart_set_color(int pin, int color, int value) {
-	value = constrain(value, 0, 255);
-  if (prev_color_values[color] != value) {
-    prev_color_values[color] = value;
-    analogWrite(pin, value);
-  }
-}
 
 // Call once to set up the RGB LED pins and state.
 void setup_rgb(int *pins) {
@@ -21,7 +11,7 @@ void setup_rgb(int *pins) {
   // Establish the mode of the pins, and set to the "previous," i.e. the initial state.
   for ( int k = 3 ; k-- ; ) {
     pinMode(pins[k], OUTPUT);
-    digitalWrite(pins[k], prev_color_values[0]);
+    analog_write(pins[k], 0);
   }
 }
 
@@ -61,9 +51,9 @@ void set_rgb(int *pins, int byte_angle) {
   }
   b = b * 4 / 5;    // reduce blue because it's extra bright
   
-  smart_set_color(pins[0], 0, r);
-  smart_set_color(pins[1], 1, g);
-  smart_set_color(pins[2], 2, b);
+  analog_write(pins[0], r);
+  analog_write(pins[1], g);
+  analog_write(pins[2], b);
   
   // Serial.print(byte_angle);
   // Serial.print(": ");

@@ -45,3 +45,11 @@ int analog_read_debounced(int pin) {
   return prev;
 }
 
+void analog_write(int pin, int val) {
+	val = constrain(val, 0, 255);
+	if (val != prev_pin_state[pin]) {
+		prev_pin_state[pin] = val;
+		analogWrite(pin, val);
+	}
+}
+

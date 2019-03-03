@@ -21,3 +21,7 @@ void setup_switch(int pin, cb_switch_pushed cb);
 // back and forth that often happens with, for example, pots.
 int analog_read_debounced(int pin);
 
+// Same as analogWrite(), but constrains to [0,255], and does nothing if the value is the same as the current value,
+// which saves CPU time and is common.
+void analog_write(int pin, int val);
+
