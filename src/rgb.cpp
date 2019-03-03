@@ -1,5 +1,5 @@
 #include "arduino.h"
-#include "trig.c"
+#include "trig.cpp"
 
 // The 2D vectors that each color represents
 float color_vectors[3][2] = {
