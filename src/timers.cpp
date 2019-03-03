@@ -2,8 +2,8 @@
 
 CTimers Timers;
 
-void CTimers::loop() {
-	unsigned long interval, last;
+int CTimers::loop() {
+	unsigned long interval;
 	
 	// Load the current time
 	unsigned long ms = millis();
@@ -11,15 +11,28 @@ void CTimers::loop() {
 	// Look for slots which need to be triggered
 	int slot = MAX_NUM_TIMERS;
 	while (slot--) {
-		if (this->timers[slot].ms_interval) {		// valid slot?
+		if (this->timers[slot].ms_interval && ms >= this->timers[slot].ms_next_trigger) {		// valid slot, and it's time to trigger?
+			this->timers[slot].callback(ms - this->timers[slot].ms_last_triggered);		// trigger, and give the exact ms difference for things like rate calculations
+			this->timers[slot].ms_last_triggered = ms;
 			interval = this->timers[slot].ms_interval;
-			last = this->timers[slot].ms_last_triggered;
-			if ((ms / interval) > (last / interval)) {		// have we entered a new interval?
-				this->timers[slot].callback(ms - last);
-				this->timers[slot].ms_last_triggered = ms;
-			}
+			this->timers[slot].ms_next_trigger = ((ms / interval) + 1) * interval;		// the millis() when we need to trigger again
+			ms = millis();			// reset the current millisecond value, in case that call-back took a long time
 		}
 	}
+	
+	// Determine the longest we could sleep until the next timer
+	unsigned long next_trigger = ms + 10000;			// longest we'll wait is 10 seconds from now
+	slot = MAX_NUM_TIMERS;
+	while (slot--) {
+		if (this->timers[slot].ms_interval) {		// valid slot?
+			interval = this->timers[slot].ms_next_trigger;
+			next_trigger = min(next_trigger, interval);			// whichever trigger is sooner
+		}
+	}
+	if (next_trigger <= ms) {		// no delay?
+		return 0;
+	}
+	return next_trigger - ms;		// can delay this long
 }
 
 int CTimers::create(unsigned long ms_interval, timer_cb cb) {
@@ -38,6 +51,7 @@ int CTimers::create(unsigned long ms_interval, timer_cb cb) {
 	// Fill the info of that slot and return the slot number
 	this->timers[slot].ms_interval = ms_interval;
 	this->timers[slot].ms_last_triggered = 0;
+	this->timers[slot].ms_next_trigger = ms_interval;			// whenever the time is right
 	this->timers[slot].callback = cb;
 	return slot;
 }
