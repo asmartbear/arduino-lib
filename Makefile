@@ -15,7 +15,7 @@ clean:
 test-trig: bin/trig_test
 	bin/trig_test
 
-bin/%.o: src/%.cpp $(THUNK_H) Makefile
+bin/%.o: src/%.cpp $(THUNK_H) src/%.h Makefile
 	cc -c -DDEV_TEST=1 -Ithunk -o $@ $<
 
 bin/trig_test: bin/trig.o
