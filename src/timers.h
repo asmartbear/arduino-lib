@@ -8,7 +8,7 @@
 
 #define MAX_NUM_TIMERS	8
 
-typedef void (*timer_cb)(unsigned long ms, unsigned long ms_interval);
+typedef void (*timer_cb)(unsigned long ms, unsigned long ms_delta);
 
 class CTimers {
 private:

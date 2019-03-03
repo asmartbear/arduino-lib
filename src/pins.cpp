@@ -1,36 +1,39 @@
 #include <Arduino.h>
 #include "pins.h"
+#include "timers.h"
 
 // Any digital pin can be a switch, so our state-array includes slots for any of them to be switches.
 static long ms_debounce_threshold[NUM_DIGITAL_PINS];		// the value of millis() when we'll look at switch state again, to debounce.
 static int prev_pin_state[NUM_DIGITAL_PINS];			// the previous value we saw on this pin, both switches, digital, and analog pins.
-static int switch_active[NUM_DIGITAL_PINS];				// 1 if this is an active switch, 0 otherwise.
+static cb_switch_pushed switch_cbs[NUM_DIGITAL_PINS];				// call-backs for active switches
+static int timer_slot_switch_checker = -1;
 
-void setup_switches(int pin_bitmap) {
-	for ( int k = NUM_DIGITAL_PINS ; k-- ; ) {
-		if (bitRead(pin_bitmap, k)) {
-			switch_active[k] = 1;
-			prev_pin_state[k] = SWITCH_UP;
-			pinMode(k, INPUT_PULLUP);
-		}
-	}
-}
-
-int get_switches_down_just_now(long ms) {
-	int curr_state, down_bitmap;
+static void switches_timer(unsigned long ms, unsigned long ms_delta) {
+	int curr_state;
 	
-	down_bitmap = 0;
 	for ( int k = NUM_DIGITAL_PINS ; k-- ; ) {
-		if (switch_active[k]) {
+		if (switch_cbs[k]) {
 			curr_state = digitalRead(k);
 			if (curr_state == SWITCH_DOWN && prev_pin_state[k] == SWITCH_UP && ms > ms_debounce_threshold[k]) {
-				bitSet(down_bitmap, k);
 				ms_debounce_threshold[k] = ms + MS_BOUNCE_THRESHOLD;
+				switch_cbs[k](k);
 			}
 			prev_pin_state[k] = curr_state;
 		}
 	}
-	return down_bitmap;
+}
+
+void setup_switch(int pin, cb_switch_pushed cb) {
+	
+	// Set up pin state
+	switch_cbs[pin] = cb;
+	prev_pin_state[pin] = SWITCH_UP;
+	pinMode(pin, INPUT_PULLUP);
+	
+	// Install timer to read from all switches
+	if (timer_slot_switch_checker < 0) {			// check hasn't already been installed
+		Timers.create(25, switches_timer);
+	}
 }
 
 int analog_read_debounced(int pin) {
