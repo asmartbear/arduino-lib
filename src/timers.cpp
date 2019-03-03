@@ -12,7 +12,7 @@ int CTimers::loop() {
 	int slot = MAX_NUM_TIMERS;
 	while (slot--) {
 		if (this->timers[slot].ms_interval && ms >= this->timers[slot].ms_next_trigger) {		// valid slot, and it's time to trigger?
-			this->timers[slot].callback(ms - this->timers[slot].ms_last_triggered);		// trigger, and give the exact ms difference for things like rate calculations
+			this->timers[slot].callback(ms, ms - this->timers[slot].ms_last_triggered);		// trigger, and give the exact ms difference for things like rate calculations
 			this->timers[slot].ms_last_triggered = ms;
 			interval = this->timers[slot].ms_interval;
 			this->timers[slot].ms_next_trigger = ((ms / interval) + 1) * interval;		// the millis() when we need to trigger again
@@ -52,7 +52,7 @@ int CTimers::create(unsigned long ms_interval, timer_cb cb) {
 	unsigned long ms = millis();
 	this->timers[slot].ms_interval = ms_interval;
 	this->timers[slot].ms_last_triggered = ms;
-	this->timers[slot].ms_next_trigger = ((ms / ms_interval) + 1) * ms_interval;			// whenever the time is right
+	this->timers[slot].ms_next_trigger = ((ms / ms_interval) + 1) * ms_interval;			// the next interval
 	this->timers[slot].callback = cb;
 	return slot;
 }
