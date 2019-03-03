@@ -1,4 +1,3 @@
-#if 0			// let's not do this
 
 #include "trig.h"
 
@@ -48,5 +47,3 @@ void set_rgb(int *pins, float a) {
     smart_set_color(pins[k], k, value);
   }
 }
-
-#endif
