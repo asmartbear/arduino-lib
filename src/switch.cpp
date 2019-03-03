@@ -11,9 +11,9 @@
 #define MS_BOUNCE_THRESHOLD	200
 
 // Any digital pin can be a switch, so our state-array includes slots for any of them to be switches.
-long ms_debounce_threshold[NUM_DIGITAL_PINS];		// the value of millis() when we'll look at switch state again, to debounce.
-int prev_switch_state[NUM_DIGITAL_PINS];			// the previous UP/DOWN value we saw on this switch.
-int switch_active[NUM_DIGITAL_PINS];				// 1 if this is an active switch, 0 otherwise.
+static long ms_debounce_threshold[NUM_DIGITAL_PINS];		// the value of millis() when we'll look at switch state again, to debounce.
+static int prev_switch_state[NUM_DIGITAL_PINS];			// the previous UP/DOWN value we saw on this switch.
+static int switch_active[NUM_DIGITAL_PINS];				// 1 if this is an active switch, 0 otherwise.
 
 // Call during setup, to establish the pins for the switches.
 // Supply a bitmap of which pin numbers should be configured as switches.

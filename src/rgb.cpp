@@ -1,8 +1,10 @@
+#if 0			// let's not do this
+
 #include "arduino.h"
-#include "trig.cpp"
+#include "trig.h"
 
 // The 2D vectors that each color represents
-float color_vectors[3][2] = {
+static float color_vectors[3][2] = {
   {  1  ,  0    },   // red along x-axis
   { -0.5,  0.866 },   // green 120 degrees from red
   { -0.5, -0.866 },   // blue 120 degrees from green
@@ -10,8 +12,8 @@ float color_vectors[3][2] = {
 
 // Sets the pin to the given value, but does nothing if that is last value set.
 // This prevents a material number of function calls and thus speeds up the process.
-int prev_color_values[3] = { 0, 0, 0 };
-void smart_set_color(int pin, int color, int value) {
+static int prev_color_values[3] = { 0, 0, 0 };
+static void smart_set_color(int pin, int color, int value) {
   if (prev_color_values[color] != value) {
     prev_color_values[color] = value;
     analogWrite(pin, value);
@@ -48,3 +50,4 @@ void set_rgb(int *pins, float a) {
   }
 }
 
+#endif

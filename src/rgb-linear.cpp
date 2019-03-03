@@ -5,8 +5,8 @@
 
 // Sets the pin to the given value, but does nothing if that is last value set.
 // This prevents a material number of function calls and thus speeds up the process.
-int prev_color_values[3] = { 0, 0, 0 };
-void smart_set_color(int pin, int color, int value) {
+static int prev_color_values[3] = { 0, 0, 0 };
+static void smart_set_color(int pin, int color, int value) {
 	value = constrain(value, 0, 255);
   if (prev_color_values[color] != value) {
     prev_color_values[color] = value;
