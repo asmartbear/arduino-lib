@@ -21,5 +21,5 @@ int get_switches_down_just_now(long ms);
 // Read from an analog pin, but if the change from the previous reading to the current
 // reading is small enough, just return the previous reading.  This prevents flapping
 // back and forth that often happens with, for example, pots.
-int dampedRead(int pin);
+int analog_read_debounced(int pin);
 

@@ -33,7 +33,7 @@ int get_switches_down_just_now(long ms) {
 	return down_bitmap;
 }
 
-int dampedRead(int pin) {
+int analog_read_debounced(int pin) {
 	int prev = prev_pin_state[pin];
   int curr = analogRead(pin);
   if (abs(curr - prev) >= 3) {
