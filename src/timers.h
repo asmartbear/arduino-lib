@@ -31,6 +31,9 @@ public:
 	// Returns the timer slot number, which can be used to remove the timer.
 	int create(unsigned long ms_interval, timer_cb cb);
 	
+	// Un-registers the timer from the given slot.
+	void remove(int slot);
+	
 };
 
 extern CTimers Timers;

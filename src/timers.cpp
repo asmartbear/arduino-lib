@@ -49,10 +49,15 @@ int CTimers::create(unsigned long ms_interval, timer_cb cb) {
 	}
 	
 	// Fill the info of that slot and return the slot number
+	unsigned long ms = millis();
 	this->timers[slot].ms_interval = ms_interval;
-	this->timers[slot].ms_last_triggered = 0;
-	this->timers[slot].ms_next_trigger = ms_interval;			// whenever the time is right
+	this->timers[slot].ms_last_triggered = ms;
+	this->timers[slot].ms_next_trigger = ((ms / ms_interval) + 1) * ms_interval;			// whenever the time is right
 	this->timers[slot].callback = cb;
 	return slot;
+}
+
+void CTimers::remove(int slot) {
+	this->timers[slot].ms_interval = 0;
 }
 
