@@ -27,7 +27,7 @@ static void input_timer(unsigned long ms, unsigned long ms_delta) {
 		// Analog input?
 		else if (analog_cbs[k]) {
 			curr_state = analogRead(k);
-			if (abs(curr_state - prev_pin_state[k]) >= 10) {
+			if (abs(curr_state - prev_pin_state[k]) >= 6) {
 				prev_pin_state[k] = curr_state;
 				analog_cbs[k](curr_state);
 			}
@@ -38,7 +38,7 @@ static void input_timer(unsigned long ms, unsigned long ms_delta) {
 // Installs the timer; does nothing if timer already installed;
 static void install_timer() {
 	if (timer_slot_input_checker < 0) {			// check hasn't already been installed
-		Timers.create(25, input_timer);
+		Timers.create(50, input_timer);
 	}
 }
 
